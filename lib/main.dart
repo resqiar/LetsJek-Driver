@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:letsjek_driver/screens/Auth/LoginPage.dart';
@@ -8,7 +9,7 @@ import 'package:letsjek_driver/screens/MainPage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(
+  await Firebase.initializeApp(
     options: Platform.isIOS || Platform.isMacOS
         ? FirebaseOptions(
             appId: '1:297855924061:ios:c6de2b69b03a5be8',
@@ -32,13 +33,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final isLogin = FirebaseAuth.instance.currentUser;
+
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.green,
         fontFamily: 'Bolt-Regular',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: LoginPage.id,
+      initialRoute: (isLogin != null) ? MainPage.id : LoginPage.id,
       routes: {
         MainPage.id: (context) => MainPage(),
         LoginPage.id: (context) => LoginPage(),
