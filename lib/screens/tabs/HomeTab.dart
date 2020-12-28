@@ -138,7 +138,7 @@ class _HomeTabState extends State<HomeTab> {
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -146,13 +146,13 @@ class _HomeTabState extends State<HomeTab> {
                           height: 36,
                         ),
                         Text(
-                          'You are currently jobduty',
+                          'You are currently offduty',
                           style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(
                           height: 4,
                         ),
-                        SubmitFlatButton('GO OFFDUTY', Colors.green, () {}),
+                        SubmitFlatButton('GO ONDUTY', Colors.blue, () {}),
                         SizedBox(
                           height: 4,
                         ),
@@ -160,7 +160,6 @@ class _HomeTabState extends State<HomeTab> {
                           onTap: () {
                             scrollUpTopBar();
                           },
-                          onSecondaryTap: () {},
                           child: Icon(
                             Icons.keyboard_arrow_up,
                             color: Colors.white,
@@ -180,14 +179,6 @@ class _HomeTabState extends State<HomeTab> {
                   height: MediaQuery.of(context).size.height * 0.08,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.black26,
-                    //     blurRadius: 18.0,
-                    //     spreadRadius: 0.8,
-                    //     offset: Offset(0.8, 0.8),
-                    //   ),
-                    // ],
                   ),
                   child: Container(
                     child: Column(
