@@ -157,6 +157,7 @@ class _HomeTabState extends State<HomeTab> {
                         ),
                         SubmitFlatButton('GO ONDUTY', Colors.blue, () {
                           goOnduty();
+                          getUpdatedLoc();
                         }),
                         SizedBox(
                           height: 4,
@@ -227,5 +228,28 @@ class _HomeTabState extends State<HomeTab> {
     tripReqDBRef.set('waiting for passenger');
 
     tripReqDBRef.onValue.listen((event) {});
+  }
+
+  void getUpdatedLoc() {
+    StreamSubscription<Position> currentPosStream;
+
+    currentPosStream = Geolocator.getPositionStream(
+            desiredAccuracy: LocationAccuracy.bestForNavigation,
+            distanceFilter: 4)
+        .listen((Position position) {
+      // UPDATE AUTOMATICALLY
+      driverCurrentPosition = position;
+      Geofire.setLocation(
+        currentUser.uid,
+        position.latitude,
+        position.longitude,
+      );
+
+      // ANIMATE GOOGLE CAMERA
+      CameraPosition mapsCamera = CameraPosition(
+          target: LatLng(position.latitude, position.longitude), zoom: 18);
+      googleMapController
+          .animateCamera(CameraUpdate.newCameraPosition(mapsCamera));
+    });
   }
 }
