@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:letsjek_driver/screens/Auth/LoginPage.dart';
+import 'package:letsjek_driver/screens/auth/LoginPage.dart';
 import 'package:letsjek_driver/widgets/ProgressDialogue.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
 import 'package:connectivity/connectivity.dart';

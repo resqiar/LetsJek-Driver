@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:letsjek_driver/screens/Auth/LoginPage.dart';
-import 'package:letsjek_driver/screens/Auth/RegisterPage.dart';
+import 'package:letsjek_driver/screens/auth/LoginPage.dart';
+import 'package:letsjek_driver/screens/auth/RegisterPage.dart';
 import 'package:letsjek_driver/screens/MainPage.dart';
 
 Future<void> main() async {
