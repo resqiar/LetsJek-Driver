@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
 
 class HomeTab extends StatefulWidget {
@@ -152,7 +155,9 @@ class _HomeTabState extends State<HomeTab> {
                         SizedBox(
                           height: 4,
                         ),
-                        SubmitFlatButton('GO ONDUTY', Colors.blue, () {}),
+                        SubmitFlatButton('GO ONDUTY', Colors.blue, () {
+                          goOnduty();
+                        }),
                         SizedBox(
                           height: 4,
                         ),
@@ -204,5 +209,23 @@ class _HomeTabState extends State<HomeTab> {
               ),
       ],
     );
+  }
+
+  void goOnduty() {
+    Geofire.initialize('available_drivers');
+
+    // SET LOCATION
+    Geofire.setLocation(currentUser.uid, driverCurrentPosition.latitude,
+        driverCurrentPosition.longitude);
+
+    // TRIP for current driver
+    DatabaseReference tripReqDBRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentUser.uid}/trip');
+
+    // SET TO WAITING
+    tripReqDBRef.set('waiting for passenger');
+
+    tripReqDBRef.onValue.listen((event) {});
   }
 }
