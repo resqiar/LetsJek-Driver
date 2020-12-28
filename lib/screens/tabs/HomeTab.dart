@@ -6,6 +6,7 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:letsjek_driver/global.dart';
+import 'package:letsjek_driver/widgets/ConfirmBottomSheet.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
 
 class HomeTab extends StatefulWidget {
@@ -76,6 +77,13 @@ class _HomeTabState extends State<HomeTab> {
       showSnackbar(e.toString());
     }
   }
+
+  //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
+  String jobdutyTitle = 'GO ONDUTY';
+  String jobdutySubtitle = 'You are currently offduty';
+  Color jobDutyColor = Colors.blue;
+
+  bool isOnduty = false;
   //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
 
   // ? SCROLLABLE TOP BAR
@@ -149,15 +157,53 @@ class _HomeTabState extends State<HomeTab> {
                           height: 36,
                         ),
                         Text(
-                          'You are currently offduty',
+                          jobdutySubtitle,
                           style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(
                           height: 4,
                         ),
-                        SubmitFlatButton('GO ONDUTY', Colors.blue, () {
-                          goOnduty();
-                          getUpdatedLoc();
+                        SubmitFlatButton(jobdutyTitle, jobDutyColor, () {
+                          showBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                ConfirmBottomSheet(
+                              title: (!isOnduty) ? 'GO ONDUTY' : 'GO OFFDUTY',
+                              subTitle: (!isOnduty)
+                                  ? 'You are about to available receive ride request'
+                                  : 'You are about to unavailable to receive ride request',
+                              color:
+                                  (!isOnduty) ? Colors.blueAccent : Colors.red,
+                              onPressed: () {
+                                if (!isOnduty) {
+                                  goOnduty();
+                                  getUpdatedLoc();
+                                  Navigator.pop(context);
+
+                                  // CHANGE VALUE
+                                  setState(() {
+                                    isOnduty = true;
+                                    jobdutyTitle = 'GO OFFLINE';
+                                    jobdutySubtitle =
+                                        'You are currently onduty';
+                                    jobDutyColor = Colors.red;
+                                  });
+                                } else {
+                                  goOffduty();
+                                  Navigator.pop(context);
+
+                                  // CHANGE VALUE
+                                  setState(() {
+                                    isOnduty = false;
+                                    jobdutyTitle = 'GO ONLINE';
+                                    jobdutySubtitle =
+                                        'You are currently offduty';
+                                    jobDutyColor = Colors.blue;
+                                  });
+                                }
+                              },
+                            ),
+                          );
                         }),
                         SizedBox(
                           height: 4,
@@ -228,6 +274,20 @@ class _HomeTabState extends State<HomeTab> {
     tripReqDBRef.set('waiting for passenger');
 
     tripReqDBRef.onValue.listen((event) {});
+  }
+
+  void goOffduty() {
+    // REMOVE DRIVER FROM DB (AVAILABLE_DRIVERS)
+    Geofire.removeLocation(currentUser.uid);
+
+    // SET USER TO OFFDUTY
+    DatabaseReference tripReqDBRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentUser.uid}/trip');
+
+    tripReqDBRef.onDisconnect();
+    tripReqDBRef.remove();
+    tripReqDBRef = null;
   }
 
   void getUpdatedLoc() {
