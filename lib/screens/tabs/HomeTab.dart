@@ -1,10 +1,217 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-class HomeTab extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
+
+class HomeTab extends StatefulWidget {
+  @override
+  _HomeTabState createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // SNACKBAR
+  void showSnackbar(String messages) {
+    final snackbar = SnackBar(
+      content: Text(
+        messages,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18, fontFamily: 'Bolt-Semibold'),
+      ),
+    );
+
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  // GOOGLE MAPS DEFAULT LOC
+  static final CameraPosition _defaultLocation = CameraPosition(
+    target: LatLng(-6.200000, 106.816666),
+    zoom: 8,
+  );
+  // GOOGLE MAP COMPLETER
+  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController googleMapController;
+
+  //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
+  // GET CURRENT DRIVER POSITION
+  Position driverCurrentPosition;
+
+  void getDriverCurrentPos() async {
+    bool serviceEnabled;
+    LocationPermission locPermit;
+
+    // check if service enabled or not
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Get user to turn on his GPS services
+      locPermit = await Geolocator.requestPermission();
+    }
+
+    // check if apps denied service permanently
+    locPermit = await Geolocator.checkPermission();
+    if (locPermit == LocationPermission.deniedForever) {
+      return showSnackbar('Location services are disabled permanently');
+    }
+
+    try {
+      // get current users location
+      Position pos = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+      driverCurrentPosition = pos;
+
+      LatLng coords = LatLng(pos.latitude, pos.longitude);
+      CameraPosition mapsCamera = CameraPosition(target: coords, zoom: 18);
+      googleMapController
+          .animateCamera(CameraUpdate.newCameraPosition(mapsCamera));
+
+      // GEOCODE
+      // String address = await HttpRequestMethod.findAddressByCoord(pos, context);
+    } catch (e) {
+      showSnackbar(e.toString());
+    }
+  }
+  //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
+
+  // ? SCROLLABLE TOP BAR
+  bool isScrollDown = true;
+  void scrollUpTopBar() {
+    setState(() {
+      isScrollDown = false;
+    });
+  }
+
+  void scrollDownTopBar() {
+    setState(() {
+      isScrollDown = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Home Tab'),
+    return Stack(
+      children: [
+        GoogleMap(
+          padding: EdgeInsets.only(
+            bottom: 8,
+            left: 8,
+            right: 8,
+            top: (isScrollDown)
+                ? MediaQuery.of(context).size.height * 0.17
+                : MediaQuery.of(context).size.height * 0.05,
+          ),
+          initialCameraPosition: _defaultLocation,
+          mapType: MapType.normal,
+          compassEnabled: true,
+          trafficEnabled: true,
+          myLocationEnabled: true,
+          zoomControlsEnabled: true,
+          zoomGesturesEnabled: true,
+          myLocationButtonEnabled: true,
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+            googleMapController = controller;
+
+            // get driver current location
+            getDriverCurrentPos();
+          },
+        ),
+        (isScrollDown)
+            ? Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.17,
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 18.0,
+                        spreadRadius: 0.8,
+                        offset: Offset(0.8, 0.8),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 36,
+                        ),
+                        Text(
+                          'You are currently jobduty',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        SubmitFlatButton('GO OFFDUTY', Colors.green, () {}),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            scrollUpTopBar();
+                          },
+                          onSecondaryTap: () {},
+                          child: Icon(
+                            Icons.keyboard_arrow_up,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : Positioned(
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.08,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.black26,
+                    //     blurRadius: 18.0,
+                    //     spreadRadius: 0.8,
+                    //     offset: Offset(0.8, 0.8),
+                    //   ),
+                    // ],
+                  ),
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 28,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            scrollDownTopBar();
+                          },
+                          child: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: Colors.black,
+                            size: 36.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+      ],
     );
   }
 }
