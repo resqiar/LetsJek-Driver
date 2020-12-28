@@ -31,9 +31,9 @@ class ConfirmBottomSheet extends StatelessWidget {
           SizedBox(height: 8),
           Text(
             title,
-            style: TextStyle(fontSize: 18, fontFamily: 'Bolt-Semibold'),
+            style: TextStyle(fontSize: 24, fontFamily: 'Bolt-Semibold'),
           ),
-          SizedBox(height: 14),
+          SizedBox(height: 8),
           Text(
             subTitle,
             style: TextStyle(fontSize: 14, color: Colors.grey),

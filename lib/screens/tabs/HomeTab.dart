@@ -299,11 +299,14 @@ class _HomeTabState extends State<HomeTab> {
         .listen((Position position) {
       // UPDATE AUTOMATICALLY
       driverCurrentPosition = position;
-      Geofire.setLocation(
-        currentUser.uid,
-        position.latitude,
-        position.longitude,
-      );
+
+      if (isOnduty) {
+        Geofire.setLocation(
+          currentUser.uid,
+          position.latitude,
+          position.longitude,
+        );
+      }
 
       // ANIMATE GOOGLE CAMERA
       CameraPosition mapsCamera = CameraPosition(
