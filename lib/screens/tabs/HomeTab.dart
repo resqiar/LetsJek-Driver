@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:letsjek_driver/global.dart';
+import 'package:letsjek_driver/helpers/PushNotificationsHelper.dart';
 import 'package:letsjek_driver/widgets/ConfirmBottomSheet.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
 
@@ -100,6 +102,28 @@ class _HomeTabState extends State<HomeTab> {
     });
   }
 
+  //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
+
+  // GET DRIVER TOKEN
+  void getCurrentDriversInfo() {
+    currentUser = FirebaseAuth.instance.currentUser;
+
+    // FCM HELPER
+    PushNotificationsHelper pushNotificationsHelper = PushNotificationsHelper();
+
+    // INIT FCM
+    pushNotificationsHelper.initializeFCM();
+    // GET TOKEN
+    pushNotificationsHelper.getToken();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentDriversInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -183,7 +207,7 @@ class _HomeTabState extends State<HomeTab> {
                                   // CHANGE VALUE
                                   setState(() {
                                     isOnduty = true;
-                                    jobdutyTitle = 'GO OFFLINE';
+                                    jobdutyTitle = 'GO OFFDUTY';
                                     jobdutySubtitle =
                                         'You are currently onduty';
                                     jobDutyColor = Colors.red;
@@ -195,7 +219,7 @@ class _HomeTabState extends State<HomeTab> {
                                   // CHANGE VALUE
                                   setState(() {
                                     isOnduty = false;
-                                    jobdutyTitle = 'GO ONLINE';
+                                    jobdutyTitle = 'GO ONDUTY';
                                     jobdutySubtitle =
                                         'You are currently offduty';
                                     jobDutyColor = Colors.blue;
