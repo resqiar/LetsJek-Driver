@@ -1,5 +1,6 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
 import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
@@ -154,7 +155,15 @@ class NotificationsDialog extends StatelessWidget {
                     fontIsBold: true,
                     textColor: Colors.white,
                     title: 'ACCEPT',
-                    onpress: () {},
+                    onpress: () {
+                      // STOP THE SOUNDS
+                      assetsAudioPlayer.stop();
+
+                      // CHECK REQUEST
+                      checkRequestAvailability(context);
+
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
               ],
@@ -166,5 +175,37 @@ class NotificationsDialog extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // METHOD TO CHECK THE AVAILABILITY OF THE REQUEST
+  // IN CASE THE REQUEST IS CANCELLED, TIMED OUT, OR NOT FOUND
+  void checkRequestAvailability(context) {
+    DatabaseReference databaseReference = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentUser.uid}/trip');
+
+    // CHECK THE VALUE
+    databaseReference.once().then((DataSnapshot dataSnapshot) {
+      String tripStatus = '';
+
+      if (dataSnapshot != null) {
+        tripStatus = dataSnapshot.value.toString();
+      }
+
+      // CHECK THE CONDITIONS
+      if (tripStatus == tripDetails.requestID) {
+        // set to accepted
+        databaseReference.set('accepted');
+      } else if (tripStatus == 'cancelled') {
+        // show toast that the trip has been cancelled by user
+        showToast('Trip request has been cancelled by user');
+      } else if (tripStatus == 'timeout') {
+        // show toast that the trip has been timed out
+        showToast('Trip request has been timed out');
+      } else {
+        // show toast that the trip has a problem [NOT FOUND]
+        showToast('Trip request not found');
+      }
+    });
   }
 }

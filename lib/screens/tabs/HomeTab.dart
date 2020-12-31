@@ -295,7 +295,7 @@ class _HomeTabState extends State<HomeTab> {
         .child('drivers/${currentUser.uid}/trip');
 
     // SET TO WAITING
-    tripReqDBRef.set('waiting for passenger');
+    tripReqDBRef.set('waiting');
 
     tripReqDBRef.onValue.listen((event) {});
   }
