@@ -1,4 +1,6 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
 import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
 import 'package:letsjek_driver/widgets/ListDivider.dart';
@@ -139,6 +141,9 @@ class NotificationsDialog extends StatelessWidget {
                     textColor: Colors.grey,
                     title: 'DECLINE',
                     onpress: () {
+                      // STOP THE SOUNDS
+                      assetsAudioPlayer.stop();
+
                       Navigator.pop(context);
                     },
                   ),

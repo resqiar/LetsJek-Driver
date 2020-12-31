@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -101,6 +102,14 @@ class PushNotificationsHelper {
           builder: (BuildContext context) => NotificationsDialog(
             tripDetails: tripDetailsModel,
           ),
+        );
+
+        // PLAY NOTIFICATION SOUNDS
+        assetsAudioPlayer.open(
+          Audio('resources/sounds/alert.mp3'),
+          loopMode: LoopMode.single,
+          respectSilentMode: true,
+          autoStart: true,
         );
       }
     });
