@@ -95,6 +95,7 @@ class PushNotificationsHelper {
         tripDetailsModel.payment = payment;
         tripDetailsModel.riderName = riderName;
         tripDetailsModel.riderPhone = riderPhone;
+        tripDetailsModel.requestID = snapshot.key;
 
         // SHOW DIALOG
         showDialog(

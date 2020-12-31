@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
+import 'package:letsjek_driver/screens/trip/TripPage.dart';
 import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
 import 'package:letsjek_driver/widgets/ListDivider.dart';
 
@@ -196,6 +197,10 @@ class NotificationsDialog extends StatelessWidget {
       if (tripStatus == tripDetails.requestID) {
         // set to accepted
         databaseReference.set('accepted');
+
+        // send driver to Trip Page
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => TripPage()));
       } else if (tripStatus == 'cancelled') {
         // show toast that the trip has been cancelled by user
         showToast('Trip request has been cancelled by user');
