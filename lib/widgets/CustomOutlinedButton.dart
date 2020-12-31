@@ -6,15 +6,21 @@ class CustomOutlinedButton extends StatelessWidget {
   final Color textColor;
   final Function onpress;
   final bool fontIsBold;
+  final double width;
 
   CustomOutlinedButton(
-      {this.title, this.textColor, this.color, this.onpress, this.fontIsBold});
+      {this.title,
+      this.textColor,
+      this.color,
+      this.onpress,
+      this.fontIsBold,
+      this.width});
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       height: 40,
-      minWidth: 300,
+      minWidth: (width != null) ? width : 300,
       onPressed: onpress,
       color: color,
       shape: RoundedRectangleBorder(
