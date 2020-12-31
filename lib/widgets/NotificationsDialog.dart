@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:letsjek_driver/models/TripDetails.dart';
 import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
 import 'package:letsjek_driver/widgets/ListDivider.dart';
 
-class NotificationsDialog extends StatefulWidget {
-  @override
-  _NotificationsDialogState createState() => _NotificationsDialogState();
-}
+class NotificationsDialog extends StatelessWidget {
+  final TripDetails tripDetails;
 
-class _NotificationsDialogState extends State<NotificationsDialog> {
+  NotificationsDialog({this.tripDetails});
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -30,6 +30,37 @@ class _NotificationsDialogState extends State<NotificationsDialog> {
             height: 24,
           ),
           Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Rider Fullname',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                Row(
+                  children: [
+                    Image.asset(
+                      'resources/images/user_icon.png',
+                      height: 15,
+                      width: 15,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Expanded(
+                        child: Container(
+                      child: Text(tripDetails.riderName),
+                    )),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,8 +81,7 @@ class _NotificationsDialogState extends State<NotificationsDialog> {
                     ),
                     Expanded(
                       child: Container(
-                        child: Text(
-                            'Candinegoro, Jalan 666B Majapahit, Sidoarjo, Jawa Timur, Indonesia'),
+                        child: Text(tripDetails.pickupAddress),
                       ),
                     ),
                   ],
@@ -60,7 +90,7 @@ class _NotificationsDialogState extends State<NotificationsDialog> {
             ),
           ),
           SizedBox(
-            height: 12,
+            height: 8,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -83,8 +113,7 @@ class _NotificationsDialogState extends State<NotificationsDialog> {
                     ),
                     Expanded(
                       child: Container(
-                        child: Text(
-                            'Polres Sidoarjo, Jalan kiyai haji abdul somad, 456B Kombes Pol Duriyat 668l, Sidoarjo.'),
+                        child: Text(tripDetails.destAddress),
                       ),
                     ),
                   ],
@@ -108,7 +137,7 @@ class _NotificationsDialogState extends State<NotificationsDialog> {
                     color: Colors.white,
                     fontIsBold: false,
                     textColor: Colors.grey,
-                    title: 'CANCEL',
+                    title: 'DECLINE',
                     onpress: () {
                       Navigator.pop(context);
                     },

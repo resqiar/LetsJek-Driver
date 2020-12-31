@@ -2,24 +2,26 @@ import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
+import 'package:letsjek_driver/widgets/NotificationsDialog.dart';
 
 class PushNotificationsHelper {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   // Init FCM
-  Future initializeFCM() async {
+  Future initializeFCM(context) async {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        fetchRequestID(getRequestID(message));
+        fetchRequestID(getRequestID(message), context);
       },
       onLaunch: (Map<String, dynamic> message) async {
-        fetchRequestID(getRequestID(message));
+        fetchRequestID(getRequestID(message), context);
       },
       onResume: (Map<String, dynamic> message) async {
-        fetchRequestID(getRequestID(message));
+        fetchRequestID(getRequestID(message), context);
       },
     );
   }
@@ -56,7 +58,7 @@ class PushNotificationsHelper {
     return requestID;
   }
 
-  void fetchRequestID(String requestID) {
+  void fetchRequestID(String requestID, context) {
     // SEARCH FROM DB
     DatabaseReference databaseReference =
         FirebaseDatabase.instance.reference().child('ride_request/$requestID');
@@ -92,6 +94,14 @@ class PushNotificationsHelper {
         tripDetailsModel.payment = payment;
         tripDetailsModel.riderName = riderName;
         tripDetailsModel.riderPhone = riderPhone;
+
+        // SHOW DIALOG
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => NotificationsDialog(
+            tripDetails: tripDetailsModel,
+          ),
+        );
       }
     });
   }

@@ -9,7 +9,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/helpers/PushNotificationsHelper.dart';
 import 'package:letsjek_driver/widgets/ConfirmBottomSheet.dart';
-import 'package:letsjek_driver/widgets/NotificationsDialog.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
 
 class HomeTab extends StatefulWidget {
@@ -113,7 +112,7 @@ class _HomeTabState extends State<HomeTab> {
     PushNotificationsHelper pushNotificationsHelper = PushNotificationsHelper();
 
     // INIT FCM
-    pushNotificationsHelper.initializeFCM();
+    pushNotificationsHelper.initializeFCM(context);
     // GET TOKEN
     pushNotificationsHelper.getToken();
   }
@@ -189,51 +188,45 @@ class _HomeTabState extends State<HomeTab> {
                           height: 4,
                         ),
                         SubmitFlatButton(jobdutyTitle, jobDutyColor, () {
-                          // showBottomSheet(
-                          //   context: context,
-                          //   builder: (BuildContext context) =>
-                          //       ConfirmBottomSheet(
-                          //     title: (!isOnduty) ? 'GO ONDUTY' : 'GO OFFDUTY',
-                          //     subTitle: (!isOnduty)
-                          //         ? 'You are about to available receive ride request'
-                          //         : 'You are about to unavailable to receive ride request',
-                          //     color:
-                          //         (!isOnduty) ? Colors.blueAccent : Colors.red,
-                          //     onPressed: () {
-                          //       if (!isOnduty) {
-                          //         goOnduty();
-                          //         getUpdatedLoc();
-                          //         Navigator.pop(context);
-
-                          //         // CHANGE VALUE
-                          //         setState(() {
-                          //           isOnduty = true;
-                          //           jobdutyTitle = 'GO OFFDUTY';
-                          //           jobdutySubtitle =
-                          //               'You are currently onduty';
-                          //           jobDutyColor = Colors.red;
-                          //         });
-                          //       } else {
-                          //         goOffduty();
-                          //         Navigator.pop(context);
-
-                          //         // CHANGE VALUE
-                          //         setState(() {
-                          //           isOnduty = false;
-                          //           jobdutyTitle = 'GO ONDUTY';
-                          //           jobdutySubtitle =
-                          //               'You are currently offduty';
-                          //           jobDutyColor = Colors.blue;
-                          //         });
-                          //       }
-                          //     },
-                          //   ),
-                          // );
-
-                          showDialog(
+                          showBottomSheet(
                             context: context,
                             builder: (BuildContext context) =>
-                                NotificationsDialog(),
+                                ConfirmBottomSheet(
+                              title: (!isOnduty) ? 'GO ONDUTY' : 'GO OFFDUTY',
+                              subTitle: (!isOnduty)
+                                  ? 'You are about to available receive ride request'
+                                  : 'You are about to unavailable to receive ride request',
+                              color:
+                                  (!isOnduty) ? Colors.blueAccent : Colors.red,
+                              onPressed: () {
+                                if (!isOnduty) {
+                                  goOnduty();
+                                  getUpdatedLoc();
+                                  Navigator.pop(context);
+
+                                  // CHANGE VALUE
+                                  setState(() {
+                                    isOnduty = true;
+                                    jobdutyTitle = 'GO OFFDUTY';
+                                    jobdutySubtitle =
+                                        'You are currently onduty';
+                                    jobDutyColor = Colors.red;
+                                  });
+                                } else {
+                                  goOffduty();
+                                  Navigator.pop(context);
+
+                                  // CHANGE VALUE
+                                  setState(() {
+                                    isOnduty = false;
+                                    jobdutyTitle = 'GO ONDUTY';
+                                    jobdutySubtitle =
+                                        'You are currently offduty';
+                                    jobDutyColor = Colors.blue;
+                                  });
+                                }
+                              },
+                            ),
                           );
                         }),
                         SizedBox(
