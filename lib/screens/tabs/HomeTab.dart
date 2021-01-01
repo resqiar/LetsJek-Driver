@@ -42,8 +42,6 @@ class _HomeTabState extends State<HomeTab> {
   GoogleMapController googleMapController;
 
   //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
-  // GET CURRENT DRIVER POSITION
-  Position driverCurrentPosition;
 
   void getDriverCurrentPos() async {
     bool serviceEnabled;

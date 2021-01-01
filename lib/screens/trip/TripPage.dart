@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:letsjek_driver/global.dart';
+import 'package:letsjek_driver/helpers/MethodHelper.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
 import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
 import 'package:letsjek_driver/widgets/ListDivider.dart';
+import 'package:letsjek_driver/widgets/ProgressDialogue.dart';
 
 class TripPage extends StatefulWidget {
   final TripDetails tripDetails;
@@ -42,40 +45,18 @@ class _TripPageState extends State<TripPage> {
   GoogleMapController googleMapController;
 
   //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
-  // GET CURRENT DRIVER POSITION
-  Position driverCurrentPosition;
 
-  void getDriverCurrentPos() async {
-    bool serviceEnabled;
-    LocationPermission locPermit;
+  // SET UP MARKERS
+  // ? Routes Coordinate Polylines
+  List<LatLng> polylineCoords = [];
+  Set<Polyline> _polylines = Set<Polyline>();
+  Set<Marker> _marker = Set<Marker>();
+  Set<Circle> _circle = Set<Circle>();
+  PolylinePoints polylinePoints = PolylinePoints();
 
-    // check if service enabled or not
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Get user to turn on his GPS services
-      locPermit = await Geolocator.requestPermission();
-    }
-
-    // check if apps denied service permanently
-    locPermit = await Geolocator.checkPermission();
-    if (locPermit == LocationPermission.deniedForever) {
-      return showSnackbar('Location services are disabled permanently');
-    }
-
-    try {
-      // get current users location
-      Position pos = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
-      driverCurrentPosition = pos;
-
-      LatLng coords = LatLng(pos.latitude, pos.longitude);
-      CameraPosition mapsCamera = CameraPosition(target: coords, zoom: 18);
-      googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(mapsCamera));
-    } catch (e) {
-      showSnackbar(e.toString());
-    }
-  }
+  String estimatedTime = '';
+  double estimatedKM = 0;
+  String estimatedM = '';
 
   @override
   Widget build(BuildContext context) {
@@ -98,12 +79,20 @@ class _TripPageState extends State<TripPage> {
             zoomControlsEnabled: true,
             zoomGesturesEnabled: true,
             myLocationButtonEnabled: true,
+            markers: _marker,
+            circles: _circle,
+            polylines: _polylines,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
               googleMapController = controller;
 
               // get driver current location
-              getDriverCurrentPos();
+              // getDriverCurrentPos();
+              var driverCurrentLatLng = LatLng(driverCurrentPosition.latitude,
+                  driverCurrentPosition.longitude);
+              var pickupRiderLatLng = widget.tripDetails.pickupCoord;
+
+              getRoutes(driverCurrentLatLng, pickupRiderLatLng);
             },
           ),
           Positioned(
@@ -136,7 +125,7 @@ class _TripPageState extends State<TripPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Uchiha Naruto',
+                          widget.tripDetails.riderName,
                           style: TextStyle(
                               fontSize: 22, fontFamily: 'Bolt-Semibold'),
                         ),
@@ -153,7 +142,9 @@ class _TripPageState extends State<TripPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '35KM / 14 mins estimated',
+                          (estimatedKM < 1)
+                              ? '${estimatedM}M / $estimatedTime mins estimated'
+                              : '${estimatedKM}KM / $estimatedTime mins estimated',
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey,
@@ -196,8 +187,7 @@ class _TripPageState extends State<TripPage> {
                             ),
                             Expanded(
                               child: Container(
-                                child: Text(
-                                    'Sono Candinegoro Wonoayu Sidoarjo Majapahit Sriwijaya'),
+                                child: Text(widget.tripDetails.pickupAddress),
                               ),
                             ),
                           ],
@@ -235,8 +225,7 @@ class _TripPageState extends State<TripPage> {
                             ),
                             Expanded(
                               child: Container(
-                                child: Text(
-                                    'Sono Candinegoro Wonoayu Sidoarjo Majapahit Sriwijaya'),
+                                child: Text(widget.tripDetails.destAddress),
                               ),
                             ),
                           ],
@@ -266,5 +255,119 @@ class _TripPageState extends State<TripPage> {
         ],
       ),
     );
+  }
+
+  Future getRoutes(LatLng driverCurrentPos, LatLng riderCurrentPos) async {
+    // SHOW LOADING SCREEN FIRST
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ProgressDialogue("Please wait..."),
+    );
+
+    // CALL THE HELPER METHOD TO GET ROUTES/DETAILS
+    var getRoutes =
+        await MethodHelper.findRoutes(driverCurrentPos, riderCurrentPos);
+
+    setState(() {
+      estimatedTime = getRoutes.destDuration;
+      estimatedKM = double.parse(getRoutes.destDistanceKM);
+      estimatedM = getRoutes.destDistanceM;
+    });
+
+    // !: RENDER ROUTES :!
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> result =
+        polylinePoints.decodePolyline(getRoutes.encodedPoints);
+
+    // clear available RESULT first
+    polylineCoords.clear();
+
+    if (result.isNotEmpty) {
+      // LOOP RESULT + ADD to LIST
+      result.forEach((PointLatLng points) {
+        polylineCoords.add(LatLng(points.latitude, points.longitude));
+      });
+    }
+
+    // PROPERTY of POLYLINE
+    // clear available polyline first
+    _polylines.clear();
+
+    setState(() {
+      Polyline polyline = Polyline(
+        polylineId: PolylineId('routes'),
+        color: Colors.purple,
+        points: polylineCoords,
+        jointType: JointType.round,
+        width: 4,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+
+      // add to Set
+      _polylines.add(polyline);
+    });
+
+    // DISMISS LOADING
+    Navigator.pop(context);
+
+    // ANIMATE MAPS CAMERA
+    LatLngBounds bounds;
+
+    if (driverCurrentPos.latitude > riderCurrentPos.latitude &&
+        driverCurrentPos.longitude > riderCurrentPos.longitude) {
+      bounds =
+          LatLngBounds(southwest: riderCurrentPos, northeast: driverCurrentPos);
+    } else if (driverCurrentPos.latitude > riderCurrentPos.latitude) {
+      bounds = LatLngBounds(
+        southwest: LatLng(riderCurrentPos.latitude, driverCurrentPos.longitude),
+        northeast: LatLng(driverCurrentPos.latitude, riderCurrentPos.longitude),
+      );
+    } else if (driverCurrentPos.longitude > riderCurrentPos.longitude) {
+      bounds = LatLngBounds(
+        southwest: LatLng(driverCurrentPos.latitude, riderCurrentPos.longitude),
+        northeast: LatLng(riderCurrentPos.latitude, driverCurrentPos.longitude),
+      );
+    } else {
+      bounds =
+          LatLngBounds(southwest: driverCurrentPos, northeast: riderCurrentPos);
+    }
+
+    // UPDATE CAMERA
+    googleMapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
+
+    Marker riderMarker = Marker(
+      markerId: MarkerId('riderPosition'),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      position: riderCurrentPos,
+    );
+
+    // ADD a CIRCLE
+    Circle driverCircle = Circle(
+      circleId: CircleId('driver'),
+      center: driverCurrentPos,
+      strokeWidth: 3,
+      radius: 12,
+      strokeColor: Colors.green,
+      fillColor: Colors.greenAccent,
+    );
+
+    Circle riderCircle = Circle(
+      circleId: CircleId('rider'),
+      center: riderCurrentPos,
+      strokeWidth: 3,
+      radius: 8,
+      strokeColor: Colors.red,
+      fillColor: Colors.redAccent,
+    );
+
+    setState(() {
+      // _marker.add(pickupMarker);
+      _marker.add(riderMarker);
+      _circle.add(driverCircle);
+      _circle.add(riderCircle);
+    });
   }
 }

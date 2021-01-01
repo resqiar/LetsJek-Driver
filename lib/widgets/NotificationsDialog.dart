@@ -199,8 +199,12 @@ class NotificationsDialog extends StatelessWidget {
         databaseReference.set('accepted');
 
         // send driver to Trip Page
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => TripPage()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => TripPage(
+                      tripDetails: tripDetails,
+                    )));
       } else if (tripStatus == 'cancelled') {
         // show toast that the trip has been cancelled by user
         showToast('Trip request has been cancelled by user');
