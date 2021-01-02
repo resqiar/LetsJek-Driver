@@ -14,6 +14,9 @@ var currentUser = FirebaseAuth.instance.currentUser;
 // STREAM DRIVER POSITIONS
 StreamSubscription<Position> currentPosStream;
 
+// STREAM DRIVER POSITIONS WHEN PICK UP RIDER
+StreamSubscription<Position> driverUpdatedCoordsStream;
+
 AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
 
 // GET CURRENT DRIVER POSITION

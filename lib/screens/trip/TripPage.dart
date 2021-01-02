@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/helpers/MethodHelper.dart';
@@ -66,8 +67,32 @@ class _TripPageState extends State<TripPage> {
     acceptTrip();
   }
 
+  var geolocator = Geolocator();
+
+  // ! THIS VARIABLE WILL BE ALWAYS UPDATED
+  Position driverPos;
+
+  BitmapDescriptor driverIcon;
+  void createDriverMarker() {
+    if (driverIcon == null) {
+      ImageConfiguration imageConfiguration = createLocalImageConfiguration(
+        context,
+        size: Size(2, 2),
+      );
+
+      // ICON IMAGE
+      BitmapDescriptor.fromAssetImage(
+              imageConfiguration, 'resources/images/car_android.png')
+          .then((icon) {
+        driverIcon = icon;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    createDriverMarker();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -101,6 +126,9 @@ class _TripPageState extends State<TripPage> {
               var pickupRiderLatLng = widget.tripDetails.pickupCoord;
 
               getRoutes(driverCurrentLatLng, pickupRiderLatLng);
+
+              // STREAM CURRENT POSITIONS
+              getLocationsUpdate();
             },
           ),
           Positioned(
@@ -404,6 +432,39 @@ class _TripPageState extends State<TripPage> {
       _marker.add(riderMarker);
       _circle.add(driverCircle);
       _circle.add(riderCircle);
+    });
+  }
+
+  void getLocationsUpdate() {
+    driverUpdatedCoordsStream = Geolocator.getPositionStream(
+            desiredAccuracy: LocationAccuracy.bestForNavigation)
+        .listen((Position position) {
+      driverPos = position;
+      driverCurrentPosition = position;
+
+      // SET MARKER
+      LatLng coords = LatLng(position.latitude, position.longitude);
+
+      Marker driverMarker = Marker(
+        markerId: MarkerId('driverIcon'),
+        icon: driverIcon,
+        position: coords,
+      );
+
+      // UPDATE EVERYTHING ACCORDINGLY
+      setState(() {
+        // ANIMATE CAMERA
+        CameraPosition cameraPosition =
+            CameraPosition(target: coords, zoom: 18);
+
+        googleMapController
+            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+        // CLEAR DRIVERICON BEFORE ADD NEW
+        _marker.removeWhere((marker) => marker.markerId.value == 'driverIcon');
+
+        _marker.add(driverMarker);
+      });
     });
   }
 }
