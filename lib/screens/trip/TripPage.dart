@@ -6,11 +6,13 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:letsjek_driver/global.dart';
+import 'package:letsjek_driver/helpers/MapToolkitHelper.dart';
 import 'package:letsjek_driver/helpers/MethodHelper.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
 import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
 import 'package:letsjek_driver/widgets/ListDivider.dart';
 import 'package:letsjek_driver/widgets/ProgressDialogue.dart';
+import 'package:maps_toolkit/maps_toolkit.dart' as mp;
 
 class TripPage extends StatefulWidget {
   final TripDetails tripDetails;
@@ -436,11 +438,21 @@ class _TripPageState extends State<TripPage> {
   }
 
   void getLocationsUpdate() {
+    mp.LatLng pos = mp.LatLng(0, 0);
+
     driverUpdatedCoordsStream = Geolocator.getPositionStream(
             desiredAccuracy: LocationAccuracy.bestForNavigation)
         .listen((Position position) {
       driverPos = position;
       driverCurrentPosition = position;
+
+      // COMPUTED ROTATIONS
+      var rotations = MapToolkitHelper.calcRotations(
+          pos,
+          mp.LatLng(
+            position.latitude,
+            position.longitude,
+          ));
 
       // SET MARKER
       LatLng coords = LatLng(position.latitude, position.longitude);
@@ -449,6 +461,7 @@ class _TripPageState extends State<TripPage> {
         markerId: MarkerId('driverIcon'),
         icon: driverIcon,
         position: coords,
+        rotation: rotations,
       );
 
       // UPDATE EVERYTHING ACCORDINGLY
@@ -465,6 +478,9 @@ class _TripPageState extends State<TripPage> {
 
         _marker.add(driverMarker);
       });
+
+      // UPDATE DUMMY LATLNG
+      pos = mp.LatLng(position.latitude, position.longitude);
     });
   }
 }
