@@ -1,3 +1,4 @@
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:letsjek_driver/global.dart';
@@ -43,5 +44,16 @@ class MethodHelper {
             .format(totalCalc);
 
     return totalFares;
+  }
+
+  static void disableLocStream() {
+    currentPosStream.pause();
+    Geofire.removeLocation(currentUser.uid);
+  }
+
+  static void enableLocStream() {
+    currentPosStream.resume();
+    Geofire.setLocation(currentUser.uid, driverCurrentPosition.latitude,
+        driverCurrentPosition.longitude);
   }
 }

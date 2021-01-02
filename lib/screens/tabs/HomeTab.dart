@@ -326,8 +326,6 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void getUpdatedLoc() {
-    StreamSubscription<Position> currentPosStream;
-
     currentPosStream = Geolocator.getPositionStream(
             desiredAccuracy: LocationAccuracy.bestForNavigation,
             distanceFilter: 4)
