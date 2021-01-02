@@ -171,7 +171,7 @@ class _HomeTabState extends State<HomeTab> {
                 right: 0,
                 child: Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.17,
+                  height: MediaQuery.of(context).size.height * 0.19,
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     boxShadow: [
@@ -263,7 +263,7 @@ class _HomeTabState extends State<HomeTab> {
             : Positioned(
                 child: Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.08,
+                  height: MediaQuery.of(context).size.height * 0.09,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                   ),

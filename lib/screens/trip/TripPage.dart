@@ -272,7 +272,7 @@ class _TripPageState extends State<TripPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 24,
+                    height: 12,
                   ),
                   ListDivider(),
                   SizedBox(
