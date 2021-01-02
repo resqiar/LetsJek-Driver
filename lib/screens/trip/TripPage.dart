@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -57,6 +58,13 @@ class _TripPageState extends State<TripPage> {
   String estimatedTime = '';
   double estimatedKM = 0;
   String estimatedM = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    acceptTrip();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -255,6 +263,34 @@ class _TripPageState extends State<TripPage> {
         ],
       ),
     );
+  }
+
+  void acceptTrip() {
+    String tripID = widget.tripDetails.requestID;
+
+    tripRef =
+        FirebaseDatabase.instance.reference().child('ride_request/$tripID');
+
+    // set trip to accepted by driver
+    tripRef.child('status').set('accepted');
+    tripRef.child('driver_id').set(currentDriverInfo.driverId);
+    // set driver info
+    Map driverCoords = {
+      'latitude': driverCurrentPosition.latitude,
+      'longitude': driverCurrentPosition.longitude,
+    };
+
+    Map driverInfoMap = {
+      'driver_name': currentDriverInfo.driverFullname,
+      'driver_phone': currentDriverInfo.driverPhone,
+      'driver_iD': currentDriverInfo.driverId,
+      'vehicle_name': currentDriverInfo.vehicleName,
+      'vehicle_color': currentDriverInfo.vehicleColor,
+      'vehicle_number': currentDriverInfo.vehicleNumber,
+      'driver_coords': driverCoords,
+    };
+
+    tripRef.child('driver_info').set(driverInfoMap);
   }
 
   Future getRoutes(LatLng driverCurrentPos, LatLng riderCurrentPos) async {

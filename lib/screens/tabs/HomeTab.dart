@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/helpers/PushNotificationsHelper.dart';
+import 'package:letsjek_driver/models/DriverInformations.dart';
 import 'package:letsjek_driver/widgets/ConfirmBottomSheet.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
 
@@ -102,9 +103,21 @@ class _HomeTabState extends State<HomeTab> {
 
   //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
 
-  // GET DRIVER TOKEN
+  // GET DRIVER INFO
   void getCurrentDriversInfo() {
     currentUser = FirebaseAuth.instance.currentUser;
+
+    // RETRIEVE ALL DRIVER INFORMATIONS
+    DatabaseReference driverDBRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentUser.uid}');
+
+    driverDBRef.once().then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot != null) {
+        // POPULATE MODEL
+        currentDriverInfo = DriverInformations.enterDataSnapshot(dataSnapshot);
+      }
+    });
 
     // FCM HELPER
     PushNotificationsHelper pushNotificationsHelper = PushNotificationsHelper();
