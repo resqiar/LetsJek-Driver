@@ -7,6 +7,7 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:letsjek_driver/screens/auth/LoginPage.dart';
 import 'package:letsjek_driver/screens/auth/RegisterPage.dart';
 import 'package:letsjek_driver/screens/MainPage.dart';
+import 'package:letsjek_driver/screens/auth/VehicleInfoPage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,10 +58,12 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         initialRoute: (isLogin != null) ? MainPage.id : LoginPage.id,
+        // initialRoute: RegisterPage.id,
         routes: {
           MainPage.id: (context) => MainPage(),
           LoginPage.id: (context) => LoginPage(),
           RegisterPage.id: (context) => RegisterPage(),
+          VehicleInfoPage.id: (context) => VehicleInfoPage(),
         },
       ),
     );

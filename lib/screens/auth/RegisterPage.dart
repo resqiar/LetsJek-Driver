@@ -51,7 +51,8 @@ class _RegisterPageState extends State<RegisterPage> {
       dbRef.set(userDataMap);
 
       // if everything is okay then push user to MainPage
-      Navigator.pushNamedAndRemoveUntil(context, 'mainpage', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+          context, 'vehicleinfopage', (route) => false);
     } on FirebaseException catch (e) {
       // if there is an error - hide loading screen - show error snackbar
       Navigator.pop(context);

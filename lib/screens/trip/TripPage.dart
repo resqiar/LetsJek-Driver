@@ -144,7 +144,7 @@ class _TripPageState extends State<TripPage> {
                         Text(
                           (estimatedKM < 1)
                               ? '${estimatedM}M / $estimatedTime mins estimated'
-                              : '${estimatedKM}KM / $estimatedTime mins estimated',
+                              : '${estimatedKM.toStringAsFixed(0)}KM / $estimatedTime mins estimated',
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey,
