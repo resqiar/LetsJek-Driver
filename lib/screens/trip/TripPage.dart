@@ -73,6 +73,8 @@ class _TripPageState extends State<TripPage> {
 
   // ! THIS VARIABLE WILL BE ALWAYS UPDATED
   Position driverPos;
+  String tripStatus = 'accepted';
+  bool requestIsOnGoing = false;
 
   BitmapDescriptor driverIcon;
   void createDriverMarker() {
@@ -481,6 +483,59 @@ class _TripPageState extends State<TripPage> {
 
       // UPDATE DUMMY LATLNG
       pos = mp.LatLng(position.latitude, position.longitude);
+
+      // UPDATE INFORMATIONS CONTAINS
+      getUpdatedTripInfo();
+
+      // PUSH TO DATABASE CURRENT DRIVER POS
+      Map driverCoords = {
+        'latitude': driverPos.latitude,
+        'longitude': driverPos.longitude,
+      };
+
+      tripRef.child('driver_coords').set(driverCoords);
     });
+  }
+
+  void getUpdatedTripInfo() async {
+    if (!requestIsOnGoing) {
+      // NULL SAFETY
+      if (driverPos == null) {
+        return;
+      }
+      // SET NOW IS REQUESTING
+      requestIsOnGoing = true;
+
+      // this will be the coords that always updated
+      // ! current pos
+      var currentLatLng = LatLng(driverPos.latitude, driverPos.longitude);
+      // ! dest pos
+      LatLng destLatLng;
+
+      // WHEN TRIP STATUS IS ACCEPTED
+      // ITS MEANT THE DRIVER IS PICKUP RIDER
+      // IF NOT ACCEPTED MAYBE 'transporting'
+      // ITS MEANT THE DRIVER IS TRANSPORTING RIDER TO THEIR DEST POINT
+      if (tripStatus == 'accepted') {
+        destLatLng = widget.tripDetails.pickupCoord;
+      } else {
+        destLatLng = widget.tripDetails.destCoord;
+      }
+
+      // PROCESS THE COORDINATES TO ACHIEVE THE INFOs
+      var updatedInformations =
+          await MethodHelper.findRoutes(currentLatLng, destLatLng);
+
+      if (updatedInformations != null) {
+        setState(() {
+          estimatedTime = updatedInformations.destDuration;
+          estimatedKM = double.parse(updatedInformations.destDistanceKM);
+          estimatedM = updatedInformations.destDistanceM;
+        });
+      }
+
+      // SET NOW IS NOT REQUESTING
+      requestIsOnGoing = false;
+    }
   }
 }
