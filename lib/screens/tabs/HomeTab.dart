@@ -146,7 +146,7 @@ class _HomeTabState extends State<HomeTab> {
             left: 8,
             right: 8,
             top: (isScrollDown)
-                ? MediaQuery.of(context).size.height * 0.17
+                ? MediaQuery.of(context).size.height * 0.18
                 : MediaQuery.of(context).size.height * 0.05,
           ),
           initialCameraPosition: _defaultLocation,
@@ -172,7 +172,7 @@ class _HomeTabState extends State<HomeTab> {
                 right: 0,
                 child: Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.19,
+                  height: MediaQuery.of(context).size.height * 0.18,
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     boxShadow: [
@@ -248,9 +248,11 @@ class _HomeTabState extends State<HomeTab> {
                           onTap: () {
                             scrollUpTopBar();
                           },
-                          child: Icon(
-                            Icons.keyboard_arrow_up,
-                            color: Colors.white,
+                          child: Container(
+                            child: Icon(
+                              Icons.keyboard_arrow_up,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -279,10 +281,18 @@ class _HomeTabState extends State<HomeTab> {
                           onTap: () {
                             scrollDownTopBar();
                           },
-                          child: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: Colors.black,
-                            size: 36.0,
+                          child: Container(
+                            height: 25,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Colors.white,
+                              size: 30.0,
+                            ),
                           ),
                         ),
                       ],

@@ -41,7 +41,10 @@ class NotificationsDialog extends StatelessWidget {
               children: [
                 Text(
                   'Rider Fullname',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Bolt-Semibold'),
                 ),
                 Row(
                   children: [
@@ -72,7 +75,10 @@ class NotificationsDialog extends StatelessWidget {
               children: [
                 Text(
                   'Payment',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Bolt-Semibold'),
                 ),
                 Row(
                   children: [
@@ -104,7 +110,10 @@ class NotificationsDialog extends StatelessWidget {
               children: [
                 Text(
                   'Pickup Address',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Bolt-Semibold'),
                 ),
                 Row(
                   children: [
@@ -136,7 +145,10 @@ class NotificationsDialog extends StatelessWidget {
               children: [
                 Text(
                   'Destination Address',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Bolt-Semibold'),
                 ),
                 Row(
                   children: [
@@ -243,13 +255,13 @@ class NotificationsDialog extends StatelessWidget {
                     )));
       } else if (tripStatus == 'cancelled') {
         // show toast that the trip has been cancelled by user
-        showToast('Trip request has been cancelled by user');
+        showToast('Trip request has been cancelled by rider');
       } else if (tripStatus == 'timeout') {
         // show toast that the trip has been timed out
         showToast('Trip request has been timed out');
       } else {
         // show toast that the trip has a problem [NOT FOUND]
-        showToast('Trip request not found');
+        showToast('Trip has been taken by another driver');
       }
     });
   }

@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
       reverseCurve: Curves.fastLinearToSlowEaseIn,
       child: MaterialApp(
         theme: ThemeData(
-          primaryColor: Colors.green,
+          primaryColor: Colors.blue,
           fontFamily: 'Bolt-Regular',
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),

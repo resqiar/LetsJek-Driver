@@ -176,8 +176,21 @@ class _TripPageState extends State<TripPage> {
                               fontSize: 22, fontFamily: 'Bolt-Semibold'),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(Icons.phone_enabled),
+                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          child: Row(
+                            children: [
+                              FlatButton(
+                                onPressed: () {},
+                                minWidth: 20,
+                                child: Icon(Icons.message_rounded),
+                              ),
+                              FlatButton(
+                                onPressed: () {},
+                                minWidth: 20,
+                                child: Icon(Icons.phone_enabled),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

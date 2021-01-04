@@ -53,7 +53,7 @@ class _MainPageState extends State<MainPage>
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.green,
+        selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         selectedLabelStyle: TextStyle(fontSize: 14),

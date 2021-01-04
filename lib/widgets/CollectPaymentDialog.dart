@@ -96,7 +96,10 @@ class CollectPaymentDialog extends StatelessWidget {
                     .child(
                         'drivers/${currentUser.uid}/history/${tripDetails.requestID}');
 
-                Map tripID = {'trip_id': tripDetails.requestID};
+                Map tripID = {
+                  'trip_id': tripDetails.requestID,
+                  'finished_on': DateTime.now().toString(),
+                };
                 historyRef.set(tripID);
 
                 Navigator.pop(context);
