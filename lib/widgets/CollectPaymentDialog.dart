@@ -90,6 +90,15 @@ class CollectPaymentDialog extends StatelessWidget {
                 // ENABLE LOC STREAM AGAIN
                 MethodHelper.enableLocStream();
 
+                // SAVE TRIP TO DRIVER's HISTORY
+                DatabaseReference historyRef = FirebaseDatabase.instance
+                    .reference()
+                    .child(
+                        'drivers/${currentUser.uid}/history/${tripDetails.requestID}');
+
+                Map tripID = {'trip_id': tripDetails.requestID};
+                historyRef.set(tripID);
+
                 Navigator.pop(context);
 
                 // SET BACK DRIVER TO HOMETAB

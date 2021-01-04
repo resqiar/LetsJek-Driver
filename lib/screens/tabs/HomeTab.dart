@@ -308,6 +308,8 @@ class _HomeTabState extends State<HomeTab> {
           jobdutySubtitle = 'You are currently onduty';
           jobDutyColor = Colors.red;
         });
+
+        getUpdatedLoc();
       }
     });
   }
