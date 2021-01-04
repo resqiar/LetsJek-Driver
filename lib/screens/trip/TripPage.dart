@@ -359,8 +359,13 @@ class _TripPageState extends State<TripPage> {
             ProgressDialogue('Starting Trip, Please wait...'),
       );
 
-      await getRoutes(LatLng(driverPos.latitude, driverPos.longitude),
-          widget.tripDetails.destCoord);
+      if (driverPos == null) {
+        await getRoutes(
+            widget.tripDetails.pickupCoord, widget.tripDetails.destCoord);
+      } else {
+        await getRoutes(LatLng(driverPos.latitude, driverPos.longitude),
+            widget.tripDetails.destCoord);
+      }
 
       // SET TRIP REF TO PICKED
       tripRef.child('status').set('transporting');
