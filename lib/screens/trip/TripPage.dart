@@ -9,6 +9,8 @@ import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/helpers/MapToolkitHelper.dart';
 import 'package:letsjek_driver/helpers/MethodHelper.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
+import 'package:letsjek_driver/widgets/CollectPaymentDialog.dart';
+import 'package:letsjek_driver/widgets/ConfirmBottomSheet.dart';
 import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
 import 'package:letsjek_driver/widgets/ListDivider.dart';
 import 'package:letsjek_driver/widgets/ProgressDialogue.dart';
@@ -377,9 +379,19 @@ class _TripPageState extends State<TripPage> {
       });
 
       Navigator.pop(context);
-    } else {
+    } else if (tripStatus == 'transporting') {
       //! HERE IT SHOULD END THE TRIP
 
+      // Disable Location Stream
+      driverUpdatedCoordsStream.cancel();
+
+      // Show Dialog to Finish the Trip
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) =>
+            CollectPaymentDialog(tripDetails: widget.tripDetails),
+      );
     }
   }
 

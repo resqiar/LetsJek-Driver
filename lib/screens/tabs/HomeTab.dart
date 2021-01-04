@@ -133,6 +133,7 @@ class _HomeTabState extends State<HomeTab> {
     // TODO: implement initState
     super.initState();
     getCurrentDriversInfo();
+    checkIsOnDutyOrNot();
   }
 
   @override
@@ -291,6 +292,24 @@ class _HomeTabState extends State<HomeTab> {
               ),
       ],
     );
+  }
+
+  void checkIsOnDutyOrNot() async {
+    // TRIP for current driver
+    DatabaseReference tripReqDBRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentUser.uid}/trip');
+
+    tripReqDBRef.once().then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value == 'waiting') {
+        setState(() {
+          isOnduty = true;
+          jobdutyTitle = 'GO OFFDUTY';
+          jobdutySubtitle = 'You are currently onduty';
+          jobDutyColor = Colors.red;
+        });
+      }
+    });
   }
 
   void goOnduty() {
