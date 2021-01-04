@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
 import 'package:letsjek_driver/widgets/NotificationsDialog.dart';
@@ -77,6 +78,13 @@ class PushNotificationsHelper {
         String destLat = snapshot.value['dest_coord']['latitude'];
         String destLng = snapshot.value['dest_coord']['longitude'];
 
+        // PRICE
+        String fares = snapshot.value['fares_price'];
+        String formattedFares = NumberFormat.currency(
+          locale: 'id',
+          symbol: 'IDR ',
+          decimalDigits: 0,
+        ).format(int.parse(fares));
         // PAYMENT
         String payment = snapshot.value['payment'];
 
@@ -95,6 +103,7 @@ class PushNotificationsHelper {
         tripDetailsModel.payment = payment;
         tripDetailsModel.riderName = riderName;
         tripDetailsModel.riderPhone = riderPhone;
+        tripDetailsModel.fares = formattedFares;
         tripDetailsModel.requestID = snapshot.key;
 
         // SHOW DIALOG

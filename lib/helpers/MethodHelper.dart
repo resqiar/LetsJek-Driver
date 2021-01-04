@@ -1,6 +1,5 @@
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:letsjek_driver/global.dart';
 import 'package:letsjek_driver/helpers/HttpRequestHelper.dart';
 import 'package:letsjek_driver/models/Routes.dart';
@@ -28,22 +27,6 @@ class MethodHelper {
     routesModels.encodedPoints = response["routes"][0]["geometry"];
 
     return routesModels;
-  }
-
-  static calculateFares(Routes routes) {
-    // BASE FARES -> RP.3000
-    // DISTANCE FARES -> RP.2000
-    // TIME FARES -> RP.1000
-    double baseFares = 5000;
-    double distFares = (double.parse(routes.destDistanceKM) * 5000);
-    double timeFares = (double.parse(routes.destDuration) * 500);
-
-    int totalCalc = (baseFares + distFares + timeFares).toInt();
-    String totalFares =
-        NumberFormat.currency(locale: 'id', symbol: 'IDR ', decimalDigits: 0)
-            .format(totalCalc);
-
-    return totalFares;
   }
 
   static void disableLocStream() {

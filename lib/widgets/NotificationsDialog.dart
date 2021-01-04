@@ -66,6 +66,38 @@ class NotificationsDialog extends StatelessWidget {
             height: 8,
           ),
           Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Payment',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.payment_rounded,
+                      color: Colors.black54,
+                      size: 20,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Expanded(
+                        child: Container(
+                      child:
+                          Text('${tripDetails.fares} (${tripDetails.payment})'),
+                    )),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +159,7 @@ class NotificationsDialog extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 38,
+            height: 24,
           ),
           ListDivider(),
           SizedBox(

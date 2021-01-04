@@ -9,6 +9,7 @@ class TripDetails {
   String payment;
   String riderName;
   String riderPhone;
+  String fares;
 
   TripDetails({
     this.destAddress,
@@ -19,5 +20,6 @@ class TripDetails {
     this.payment,
     this.riderName,
     this.riderPhone,
+    this.fares,
   });
 }
