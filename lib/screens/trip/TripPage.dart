@@ -93,6 +93,10 @@ class _TripPageState extends State<TripPage> {
     }
   }
 
+  // ! THIS VARIABLE WILL UPDATED ONCE THE DRIVER EITHER PICKED OR FINISHED THE TRIP
+  String defaultButtonTitle = 'TELL RIDER THAT IAM ARRIVED';
+  Color defaultButtonColor = Colors.green;
+
   @override
   Widget build(BuildContext context) {
     createDriverMarker();
@@ -281,12 +285,14 @@ class _TripPageState extends State<TripPage> {
                     height: 8,
                   ),
                   CustomOutlinedButton(
-                    color: Colors.green,
+                    color: defaultButtonColor,
                     fontIsBold: true,
                     textColor: Colors.white,
                     width: 350,
-                    onpress: () {},
-                    title: 'TELL RIDER IM ARRIVED',
+                    onpress: () {
+                      tripButtonController();
+                    },
+                    title: defaultButtonTitle,
                   ),
                 ],
               ),
@@ -323,6 +329,53 @@ class _TripPageState extends State<TripPage> {
     };
 
     tripRef.child('driver_info').set(driverInfoMap);
+  }
+
+  void tripButtonController() async {
+    // CHECK IF STATUS IS ACCEPTED
+    if (tripStatus == 'accepted') {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) =>
+            ProgressDialogue('Notifying Rider, Please wait...'),
+      );
+
+      // SET TRIP REF TO PICKED
+      tripRef.child('status').set('picked');
+
+      setState(() {
+        defaultButtonTitle = 'START TRIP';
+        defaultButtonColor = Colors.blue;
+        tripStatus = 'picked';
+      });
+
+      Navigator.pop(context);
+    } else if (tripStatus == 'picked') {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) =>
+            ProgressDialogue('Starting Trip, Please wait...'),
+      );
+
+      await getRoutes(LatLng(driverPos.latitude, driverPos.longitude),
+          widget.tripDetails.destCoord);
+
+      // SET TRIP REF TO PICKED
+      tripRef.child('status').set('transporting');
+
+      setState(() {
+        defaultButtonTitle = 'END TRIP';
+        defaultButtonColor = Colors.red;
+        tripStatus = 'transporting';
+      });
+
+      Navigator.pop(context);
+    } else {
+      //! HERE IT SHOULD END THE TRIP
+
+    }
   }
 
   Future getRoutes(LatLng driverCurrentPos, LatLng riderCurrentPos) async {
@@ -368,7 +421,7 @@ class _TripPageState extends State<TripPage> {
         color: Colors.purple,
         points: polylineCoords,
         jointType: JointType.round,
-        width: 4,
+        width: 6,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
         geodesic: true,
