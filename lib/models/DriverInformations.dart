@@ -26,6 +26,6 @@ class DriverInformations {
     driverPhone = dataSnapshot.value['phone'];
     vehicleName = dataSnapshot.value['vehicle']['vehicleName'];
     vehicleColor = dataSnapshot.value['vehicle']['vehicleColor'];
-    vehicleNumber = dataSnapshot.value['vehicle']['vehicleNumbers'];
+    vehicleNumber = dataSnapshot.value['vehicle']['vehicleNumber'];
   }
 }

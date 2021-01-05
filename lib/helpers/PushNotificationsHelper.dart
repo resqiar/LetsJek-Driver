@@ -52,7 +52,6 @@ class PushNotificationsHelper {
     // retrieve rideRequest_ID
     if (Platform.isAndroid) {
       requestID = messages['data']['request_id'];
-      print("requestID: $requestID");
     } else {
       print("$messages");
     }

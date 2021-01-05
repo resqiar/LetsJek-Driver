@@ -336,7 +336,7 @@ class _TripPageState extends State<TripPage> {
     Map driverInfoMap = {
       'driver_name': currentDriverInfo.driverFullname,
       'driver_phone': currentDriverInfo.driverPhone,
-      'driver_iD': currentDriverInfo.driverId,
+      'driver_id': currentDriverInfo.driverId,
       'vehicle_name': currentDriverInfo.vehicleName,
       'vehicle_color': currentDriverInfo.vehicleColor,
       'vehicle_number': currentDriverInfo.vehicleNumber,
