@@ -576,7 +576,7 @@ class _TripPageState extends State<TripPage> {
         'longitude': driverPos.longitude,
       };
 
-      tripRef.child('driver_coords').set(driverCoords);
+      tripRef.child('driver_info/driver_coords').set(driverCoords);
     });
   }
 
