@@ -10,7 +10,6 @@ import 'package:letsjek_driver/helpers/MapToolkitHelper.dart';
 import 'package:letsjek_driver/helpers/MethodHelper.dart';
 import 'package:letsjek_driver/models/TripDetails.dart';
 import 'package:letsjek_driver/widgets/CollectPaymentDialog.dart';
-import 'package:letsjek_driver/widgets/ConfirmBottomSheet.dart';
 import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
 import 'package:letsjek_driver/widgets/ListDivider.dart';
 import 'package:letsjek_driver/widgets/ProgressDialogue.dart';
@@ -61,7 +60,7 @@ class _TripPageState extends State<TripPage> {
   PolylinePoints polylinePoints = PolylinePoints();
 
   String estimatedTime = '';
-  double estimatedKM = 0;
+  String estimatedKM = '0';
   String estimatedM = '';
 
   @override
@@ -201,9 +200,9 @@ class _TripPageState extends State<TripPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          (estimatedKM < 1)
+                          (double.parse(estimatedKM) < 1)
                               ? '${estimatedM}M / $estimatedTime mins estimated'
-                              : '${estimatedKM.toStringAsFixed(0)}KM / $estimatedTime mins estimated',
+                              : '${estimatedKM}KM / $estimatedTime mins estimated',
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey,
@@ -324,9 +323,6 @@ class _TripPageState extends State<TripPage> {
     tripRef =
         FirebaseDatabase.instance.reference().child('ride_request/$tripID');
 
-    // set trip to accepted by driver
-    tripRef.child('status').set('accepted');
-    tripRef.child('driver_id').set(currentDriverInfo.driverId);
     // set driver info
     Map driverCoords = {
       'latitude': driverCurrentPosition.latitude,
@@ -344,6 +340,10 @@ class _TripPageState extends State<TripPage> {
     };
 
     tripRef.child('driver_info').set(driverInfoMap);
+    // set trip to accepted by driver
+    tripRef.child('status').set('accepted');
+    print(driverCoords);
+    tripRef.child('driver_id').set(currentDriverInfo.driverId);
   }
 
   void tripButtonController() async {
@@ -422,7 +422,7 @@ class _TripPageState extends State<TripPage> {
 
     setState(() {
       estimatedTime = getRoutes.destDuration;
-      estimatedKM = double.parse(getRoutes.destDistanceKM);
+      estimatedKM = getRoutes.destDistanceKM;
       estimatedM = getRoutes.destDistanceM;
     });
 
@@ -612,7 +612,7 @@ class _TripPageState extends State<TripPage> {
       if (updatedInformations != null) {
         setState(() {
           estimatedTime = updatedInformations.destDuration;
-          estimatedKM = double.parse(updatedInformations.destDistanceKM);
+          estimatedKM = updatedInformations.destDistanceKM;
           estimatedM = updatedInformations.destDistanceM;
         });
       }
