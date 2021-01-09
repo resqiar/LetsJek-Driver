@@ -395,6 +395,9 @@ class _TripPageState extends State<TripPage> {
     } else if (tripStatus == 'transporting') {
       //! HERE IT SHOULD END THE TRIP
 
+      // SET TRIP TO FINISHED/ARRIVED
+      tripRef.child('status').set('arrived');
+
       // Disable Location Stream
       driverUpdatedCoordsStream.cancel();
 

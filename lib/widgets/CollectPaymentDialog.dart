@@ -78,9 +78,6 @@ class CollectPaymentDialog extends StatelessWidget {
                       ProgressDialogue('Please Wait...'),
                 );
 
-                // SET TRIP TO FINISHED/ARRIVED
-                tripRef.child('status').set('arrived');
-
                 // SET RIDER TO AVAILABLE AGAIN
                 DatabaseReference databaseReference = FirebaseDatabase.instance
                     .reference()
