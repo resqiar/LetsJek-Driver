@@ -88,7 +88,7 @@ class _HomeTabState extends State<HomeTab> {
   //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
 
   // ? SCROLLABLE TOP BAR
-  bool isScrollDown = true;
+  bool isScrollDown = false;
   void scrollUpTopBar() {
     setState(() {
       isScrollDown = false;
