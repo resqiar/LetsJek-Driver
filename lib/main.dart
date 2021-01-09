@@ -32,11 +32,10 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final isLogin = FirebaseAuth.instance.currentUser;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final isLogin = FirebaseAuth.instance.currentUser;
-
     return StyledToast(
       locale: const Locale('id', 'ID'),
       borderRadius: BorderRadius.circular(20.0),
@@ -53,7 +52,7 @@ class MyApp extends StatelessWidget {
       reverseCurve: Curves.fastLinearToSlowEaseIn,
       child: MaterialApp(
         theme: ThemeData(
-          primaryColor: Colors.blue,
+          primaryColor: Colors.green,
           fontFamily: 'Bolt-Regular',
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),

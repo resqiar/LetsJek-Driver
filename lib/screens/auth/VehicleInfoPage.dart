@@ -1,12 +1,33 @@
+import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:letsjek_driver/widgets/ProgressDialogue.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
 
-class VehicleInfoPage extends StatelessWidget {
+class VehicleInfoPage extends StatefulWidget {
   static const id = 'vehicleinfopage';
+
+  @override
+  _VehicleInfoPageState createState() => _VehicleInfoPageState();
+}
+
+class _VehicleInfoPageState extends State<VehicleInfoPage> {
+  File _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -77,12 +98,16 @@ class VehicleInfoPage extends StatelessWidget {
             SizedBox(
               height: 80,
             ),
-            Image(
-              alignment: Alignment.center,
-              height: 100,
-              width: 100,
-              image: AssetImage('resources/images/logo.png'),
-            ),
+            (_image != null)
+                ? CircleAvatar(
+                    backgroundImage: AssetImage(_image.path),
+                    radius: 80,
+                  )
+                : CircleAvatar(
+                    backgroundImage:
+                        AssetImage('resources/images/user_icon.png'),
+                    radius: 80,
+                  ),
             SizedBox(
               height: 20,
             ),
@@ -95,7 +120,7 @@ class VehicleInfoPage extends StatelessWidget {
               ),
             ),
             Text(
-              'Provide vehicle informations so rider can know which is you',
+              'Provide informations so rider can know which is you',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
@@ -178,6 +203,19 @@ class VehicleInfoPage extends StatelessWidget {
                       return;
                     }
 
+                    // check everything is fil
+                    if (vehicleName.text.isEmpty ||
+                        vehicleColor.text.isEmpty ||
+                        vehicleNumber.text.isEmpty) {
+                      showSnackbar("Please fill all the forms");
+                      return;
+                    }
+
+                    if (_image == null) {
+                      showSnackbar("Please provide clear photo of yourself");
+                      return;
+                    }
+
                     uploadVehicleInfo(context);
                   }),
                 ],
@@ -185,6 +223,12 @@ class VehicleInfoPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getImage,
+        tooltip: 'Pick Image',
+        backgroundColor: Colors.green,
+        child: Icon(Icons.add_a_photo_rounded),
       ),
     );
   }
