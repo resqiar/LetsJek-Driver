@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:letsjek_driver/widgets/ProgressDialogue.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class VehicleInfoPage extends StatefulWidget {
   static const id = 'vehicleinfopage';
@@ -18,6 +20,10 @@ class VehicleInfoPage extends StatefulWidget {
 class _VehicleInfoPageState extends State<VehicleInfoPage> {
   File _image;
   final picker = ImagePicker();
+
+  // ! FIREBASE STORAGE
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
 
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
@@ -49,6 +55,27 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
 
   final vehicleNumber = TextEditingController();
 
+  Future<String> uploadFile() async {
+    var userCredential = FirebaseAuth.instance.currentUser;
+    String downloadURL = '';
+
+    firebase_storage.Reference imageRef = firebase_storage
+        .FirebaseStorage.instance
+        .ref('driverProfile/${userCredential.uid}/image');
+
+    try {
+      firebase_storage.TaskSnapshot snapshot = await imageRef.putFile(_image);
+      downloadURL = await snapshot.ref.getDownloadURL();
+    } on FirebaseException catch (e) {
+      // e.g, e.code == 'canceled'
+      if (e.code == 'cancelled') {
+        showSnackbar('Something wrong uploading your image, please try again!');
+      }
+    }
+
+    return downloadURL;
+  }
+
   void uploadVehicleInfo(context) async {
     // show loading circular bar
     showDialog(
@@ -60,10 +87,18 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
     try {
       var userCredential = FirebaseAuth.instance.currentUser;
 
+      // ADD IMAGE UPLOADED URL
+      String downloadURL = await uploadFile();
+
       // adding additional data to user's database
       final DatabaseReference dbRef = FirebaseDatabase.instance
           .reference()
           .child('drivers/${userCredential.uid}/vehicle');
+
+      // adding additional data to user's database
+      final DatabaseReference imgRef = FirebaseDatabase.instance
+          .reference()
+          .child('drivers/${userCredential.uid}/profile_url');
 
       // prepare to save all the data
       Map userDataMap = {
@@ -74,7 +109,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
 
       // push data to db
       dbRef.set(userDataMap);
-
+      imgRef.set(downloadURL);
       // if everything is okay then push user to MainPage
       Navigator.pushNamedAndRemoveUntil(context, 'mainpage', (route) => false);
     } on FirebaseException catch (e) {

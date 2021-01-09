@@ -56,8 +56,8 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Bolt-Regular',
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: (isLogin != null) ? MainPage.id : LoginPage.id,
-        // initialRoute: RegisterPage.id,
+        // initialRoute: (isLogin != null) ? MainPage.id : LoginPage.id,
+        initialRoute: RegisterPage.id,
         routes: {
           MainPage.id: (context) => MainPage(),
           LoginPage.id: (context) => LoginPage(),
