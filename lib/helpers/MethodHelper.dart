@@ -5,7 +5,7 @@ import 'package:letsjek_driver/helpers/HttpRequestHelper.dart';
 import 'package:letsjek_driver/models/Routes.dart';
 
 class MethodHelper {
-  static Future<Routes> findRoutes(LatLng pickupPoint, LatLng destPoint) async {
+  static Future findRoutes(LatLng pickupPoint, LatLng destPoint) async {
     // Get Response
     var URL =
         "https://us1.locationiq.com/v1/directions/driving/${pickupPoint.longitude},${pickupPoint.latitude};${destPoint.longitude},${destPoint.latitude}?key=$locationIQKeys&overview=full";
@@ -13,17 +13,24 @@ class MethodHelper {
     var response = await HttpRequestHelper.getRequest(URL);
 
     // if response failed
-    if (response == 'failed') return null;
-
+    if (response == 'Failed') {
+      return;
+    }
+    if (response == null) {
+      return;
+    }
+    if (response['code'].toString() != "Ok") {
+      return;
+    }
     // assign value to Model
     Routes routesModels = Routes();
 
     routesModels.destDistanceM =
-        (response["routes"][0]["distance"]).round().toStringAsFixed(0);
+        response["routes"][0]["distance"].round().toString();
     routesModels.destDistanceKM =
-        (response["routes"][0]["distance"] / 1000).round().toStringAsFixed(0);
+        (response["routes"][0]["distance"] / 1000).round().toString();
     routesModels.destDuration =
-        (response["routes"][0]["duration"] / 60).round().toStringAsFixed(0);
+        (response["routes"][0]["duration"] / 60).round().toString();
     routesModels.encodedPoints = response["routes"][0]["geometry"];
 
     return routesModels;

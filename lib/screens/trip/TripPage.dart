@@ -342,7 +342,6 @@ class _TripPageState extends State<TripPage> {
     tripRef.child('driver_info').set(driverInfoMap);
     // set trip to accepted by driver
     tripRef.child('status').set('accepted');
-    print(driverCoords);
     tripRef.child('driver_id').set(currentDriverInfo.driverId);
   }
 
