@@ -32,8 +32,6 @@ class PushNotificationsHelper {
   Future getToken() async {
     String token = await _firebaseMessaging.getToken();
 
-    print('token: $token');
-
     DatabaseReference databaseReference = FirebaseDatabase.instance
         .reference()
         .child('drivers/${currentUser.uid}/token');
@@ -52,8 +50,6 @@ class PushNotificationsHelper {
     // retrieve rideRequest_ID
     if (Platform.isAndroid) {
       requestID = messages['data']['request_id'];
-    } else {
-      print("$messages");
     }
 
     return requestID;
