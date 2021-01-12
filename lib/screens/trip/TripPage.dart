@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -62,11 +63,29 @@ class _TripPageState extends State<TripPage> {
   String estimatedTime = '';
   String estimatedKM = '0';
   String estimatedM = '';
+  String _darkStyle;
+
+  void changeMapMode(context) {
+    // DEVICE THEME
+    if (Theme.of(context).brightness == Brightness.dark) {
+      setMapStyle(_darkStyle);
+    }
+  }
+
+  Future getMapSettings() async {
+    _darkStyle =
+        await rootBundle.loadString('resources/settings/map/darkMap.json');
+  }
+
+  void setMapStyle(String mapStyle) {
+    googleMapController.setMapStyle(mapStyle);
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getMapSettings();
     acceptTrip();
   }
 
@@ -95,8 +114,8 @@ class _TripPageState extends State<TripPage> {
   }
 
   // ! THIS VARIABLE WILL UPDATED ONCE THE DRIVER EITHER PICKED OR FINISHED THE TRIP
-  String defaultButtonTitle = 'TELL RIDER THAT IAM ARRIVED';
-  Color defaultButtonColor = Colors.green;
+  String defaultButtonTitle = 'TELL RIDER THAT I HAVE ARRIVED';
+  Color defaultButtonColor = Colors.amber;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +146,7 @@ class _TripPageState extends State<TripPage> {
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
               googleMapController = controller;
-
+              changeMapMode(context);
               // get driver current location
               // getDriverCurrentPos();
               var driverCurrentLatLng = LatLng(driverCurrentPosition.latitude,
@@ -148,7 +167,7 @@ class _TripPageState extends State<TripPage> {
               padding: EdgeInsets.all(8),
               height: MediaQuery.of(context).size.height * 0.35,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
@@ -292,11 +311,11 @@ class _TripPageState extends State<TripPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 12,
+                    height: 18,
                   ),
                   ListDivider(),
                   SizedBox(
-                    height: 8,
+                    height: 18,
                   ),
                   CustomOutlinedButton(
                     color: defaultButtonColor,
@@ -360,7 +379,7 @@ class _TripPageState extends State<TripPage> {
 
       setState(() {
         defaultButtonTitle = 'START TRIP';
-        defaultButtonColor = Colors.blue;
+        defaultButtonColor = Colors.purple;
         tripStatus = 'picked';
       });
 

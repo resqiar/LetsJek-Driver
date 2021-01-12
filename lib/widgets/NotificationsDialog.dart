@@ -18,7 +18,7 @@ class NotificationsDialog extends StatelessWidget {
     return Dialog(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -84,7 +84,7 @@ class NotificationsDialog extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.payment_rounded,
-                      color: Colors.black54,
+                      color: Theme.of(context).accentColor,
                       size: 20,
                     ),
                     SizedBox(
@@ -183,7 +183,9 @@ class NotificationsDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: CustomOutlinedButton(
-                    color: Colors.white,
+                    color: (Theme.of(context).brightness == Brightness.dark)
+                        ? Theme.of(context).primaryColor
+                        : Colors.white,
                     fontIsBold: false,
                     textColor: Colors.grey,
                     title: 'DECLINE',
@@ -197,7 +199,7 @@ class NotificationsDialog extends StatelessWidget {
                 ),
                 Expanded(
                   child: CustomOutlinedButton(
-                    color: Colors.blue,
+                    color: Colors.purple,
                     fontIsBold: true,
                     textColor: Colors.white,
                     title: 'ACCEPT',

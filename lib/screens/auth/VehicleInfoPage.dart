@@ -126,7 +126,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -227,7 +227,8 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
                   SizedBox(
                     height: 40,
                   ),
-                  SubmitFlatButton("SUBMIT", Colors.green, () async {
+                  SubmitFlatButton("SUBMIT", Theme.of(context).accentColor,
+                      () async {
                     // check network validation
                     final connectivityResult =
                         await Connectivity().checkConnectivity();

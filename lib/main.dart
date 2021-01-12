@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -32,10 +33,10 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final isLogin = FirebaseAuth.instance.currentUser;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final isLogin = FirebaseAuth.instance.currentUser;
     return StyledToast(
       locale: const Locale('id', 'ID'),
       borderRadius: BorderRadius.circular(20.0),
@@ -50,20 +51,35 @@ class MyApp extends StatelessWidget {
       curve: Curves.fastOutSlowIn,
       textPadding: EdgeInsets.symmetric(horizontal: 17.0, vertical: 10.0),
       reverseCurve: Curves.fastLinearToSlowEaseIn,
-      child: MaterialApp(
-        theme: ThemeData(
-          primaryColor: Colors.green,
+      child: AdaptiveTheme(
+        light: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.white,
+          textSelectionColor: Colors.grey,
+          accentColor: Colors.black,
           fontFamily: 'Bolt-Regular',
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: (isLogin != null) ? MainPage.id : LoginPage.id,
-        // initialRoute: RegisterPage.id,
-        routes: {
-          MainPage.id: (context) => MainPage(),
-          LoginPage.id: (context) => LoginPage(),
-          RegisterPage.id: (context) => RegisterPage(),
-          VehicleInfoPage.id: (context) => VehicleInfoPage(),
-        },
+        dark: ThemeData(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.yellow,
+          accentColor: Colors.amber,
+          textSelectionColor: Colors.white70,
+          fontFamily: 'Bolt-Regular',
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        initial: AdaptiveThemeMode.system,
+        builder: (theme, darkTheme) => MaterialApp(
+          theme: theme,
+          darkTheme: darkTheme,
+          initialRoute: (isLogin == null) ? LoginPage.id : MainPage.id,
+          routes: {
+            MainPage.id: (context) => MainPage(),
+            LoginPage.id: (context) => LoginPage(),
+            RegisterPage.id: (context) => RegisterPage(),
+            VehicleInfoPage.id: (context) => VehicleInfoPage(),
+          },
+        ),
       ),
     );
   }

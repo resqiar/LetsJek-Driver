@@ -53,28 +53,35 @@ class _MainPageState extends State<MainPage>
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Theme.of(context).accentColor,
+        unselectedItemColor: Theme.of(context).textSelectionColor,
         showUnselectedLabels: true,
-        selectedLabelStyle: TextStyle(fontSize: 14),
-        unselectedLabelStyle: TextStyle(fontSize: 12),
+        selectedLabelStyle:
+            TextStyle(fontSize: 12, fontFamily: 'Bolt-Semibold'),
+        unselectedLabelStyle:
+            TextStyle(fontSize: 12, fontFamily: 'Bolt-Semibold'),
         elevation: 10,
         currentIndex: bottomNavIndex,
         onTap: (value) => updateBottomNavIndex(value),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            activeIcon: Icon(Icons.home),
             icon: Icon(Icons.home_outlined),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.credit_card_outlined),
-            label: 'Balance',
+            activeIcon: Icon(Icons.bubble_chart),
+            icon: Icon(Icons.bubble_chart_outlined),
+            label: 'Earnings',
           ),
           BottomNavigationBarItem(
+            activeIcon: Icon(Icons.star_rate),
             icon: Icon(Icons.star_rate_outlined),
             label: 'Ratings',
           ),
           BottomNavigationBarItem(
+            activeIcon: Icon(Icons.person),
             icon: Icon(Icons.person_outline_rounded),
             label: 'Profile',
           ),

@@ -41,6 +41,7 @@ dependencies:
   intl: ^0.16.1
   image_picker: ^0.6.7+21
   firebase_storage: ^5.2.0
+  adaptive_theme: ^1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -66,6 +67,7 @@ flutter:
   assets:
     - resources/images/
     - resources/sounds/
+    - resources/settings/map/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

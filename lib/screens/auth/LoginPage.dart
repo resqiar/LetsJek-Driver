@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -132,7 +132,8 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 30,
                   ),
-                  SubmitFlatButton('Sign in', Colors.green, () async {
+                  SubmitFlatButton('Sign in', Theme.of(context).accentColor,
+                      () async {
                     // check internet connectivity
                     final conResult = await Connectivity().checkConnectivity();
                     if (conResult == ConnectivityResult.none) {

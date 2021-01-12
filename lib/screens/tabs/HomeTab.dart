@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -82,7 +84,7 @@ class _HomeTabState extends State<HomeTab> {
   //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
   String jobdutyTitle = 'GO ONDUTY';
   String jobdutySubtitle = 'You are currently offduty';
-  Color jobDutyColor = Colors.blue;
+  Color jobDutyColor = Colors.purple;
 
   bool isOnduty = false;
   //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
@@ -128,10 +130,29 @@ class _HomeTabState extends State<HomeTab> {
     pushNotificationsHelper.getToken();
   }
 
+  String _darkStyle;
+
+  void changeMapMode(context) {
+    // DEVICE THEME
+    if (Theme.of(context).brightness == Brightness.dark) {
+      setMapStyle(_darkStyle);
+    }
+  }
+
+  Future getMapSettings() async {
+    _darkStyle =
+        await rootBundle.loadString('resources/settings/map/darkMap.json');
+  }
+
+  void setMapStyle(String mapStyle) {
+    googleMapController.setMapStyle(mapStyle);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getMapSettings();
     getCurrentDriversInfo();
     checkIsOnDutyOrNot();
   }
@@ -156,11 +177,13 @@ class _HomeTabState extends State<HomeTab> {
           myLocationEnabled: true,
           zoomControlsEnabled: true,
           zoomGesturesEnabled: true,
+          buildingsEnabled: true,
           myLocationButtonEnabled: true,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
             googleMapController = controller;
 
+            changeMapMode(context);
             // get driver current location
             getDriverCurrentPos();
           },
@@ -172,7 +195,7 @@ class _HomeTabState extends State<HomeTab> {
                 right: 0,
                 child: Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * 0.18,
+                  height: MediaQuery.of(context).size.height * 0.15,
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     boxShadow: [
@@ -197,7 +220,7 @@ class _HomeTabState extends State<HomeTab> {
                           style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(
-                          height: 4,
+                          height: 2,
                         ),
                         SubmitFlatButton(jobdutyTitle, jobDutyColor, () {
                           showBottomSheet(
@@ -206,10 +229,10 @@ class _HomeTabState extends State<HomeTab> {
                                 ConfirmBottomSheet(
                               title: (!isOnduty) ? 'GO ONDUTY' : 'GO OFFDUTY',
                               subTitle: (!isOnduty)
-                                  ? 'You are about to available receive ride request'
-                                  : 'You are about to unavailable to receive ride request',
+                                  ? 'You are about to available receiving ride request'
+                                  : 'You are about to unavailable receiving ride request',
                               color:
-                                  (!isOnduty) ? Colors.blueAccent : Colors.red,
+                                  (!isOnduty) ? Colors.deepPurple : Colors.red,
                               onPressed: () {
                                 if (!isOnduty) {
                                   goOnduty();
@@ -234,27 +257,13 @@ class _HomeTabState extends State<HomeTab> {
                                     jobdutyTitle = 'GO ONDUTY';
                                     jobdutySubtitle =
                                         'You are currently offduty';
-                                    jobDutyColor = Colors.blue;
+                                    jobDutyColor = Colors.purple;
                                   });
                                 }
                               },
                             ),
                           );
                         }),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            scrollUpTopBar();
-                          },
-                          child: Container(
-                            child: Icon(
-                              Icons.keyboard_arrow_up,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
                         SizedBox(
                           height: 4,
                         ),
@@ -299,6 +308,50 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                   ),
                 ),
+              ),
+        (isScrollDown)
+            ? Positioned(
+                top: MediaQuery.of(context).size.height * 0.115,
+                left: 0,
+                right: 0,
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.09,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                  ),
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 28,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            scrollUpTopBar();
+                          },
+                          child: Container(
+                            height: 25,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              Icons.keyboard_arrow_up_rounded,
+                              color: Colors.white,
+                              size: 30.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : Positioned(
+                child: Container(),
               ),
       ],
     );

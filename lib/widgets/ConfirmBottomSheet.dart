@@ -16,7 +16,7 @@ class ConfirmBottomSheet extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.2,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white10,
+        color: Theme.of(context).primaryColor,
         // boxShadow: [
         //   BoxShadow(
         //     color: Colors.black26,
@@ -37,6 +37,7 @@ class ConfirmBottomSheet extends StatelessWidget {
           Text(
             subTitle,
             style: TextStyle(fontSize: 14, color: Colors.grey),
+            textAlign: TextAlign.center,
           ),
           SizedBox(height: 24),
           Row(
@@ -53,6 +54,9 @@ class ConfirmBottomSheet extends StatelessWidget {
                     fontIsBold: false,
                   ),
                 ),
+              ),
+              SizedBox(
+                width: 8,
               ),
               Expanded(
                 child: Container(

@@ -17,7 +17,7 @@ class CollectPaymentDialog extends StatelessWidget {
     return Dialog(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColor,
       child: Container(
         width: double.infinity,
         child: Column(
@@ -66,7 +66,7 @@ class CollectPaymentDialog extends StatelessWidget {
               height: 18,
             ),
             CustomOutlinedButton(
-              color: Colors.blue,
+              color: Colors.purple,
               fontIsBold: true,
               textColor: Colors.white,
               title: 'COLLECT CASH',
