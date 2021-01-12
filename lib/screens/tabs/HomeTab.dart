@@ -19,7 +19,7 @@ class HomeTab extends StatefulWidget {
   _HomeTabState createState() => _HomeTabState();
 }
 
-class _HomeTabState extends State<HomeTab> {
+class _HomeTabState extends State<HomeTab> with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // SNACKBAR
@@ -152,6 +152,9 @@ class _HomeTabState extends State<HomeTab> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    //
+    WidgetsBinding.instance.addObserver(this);
     getMapSettings();
     getCurrentDriversInfo();
     checkIsOnDutyOrNot();
@@ -355,6 +358,28 @@ class _HomeTabState extends State<HomeTab> {
               ),
       ],
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      if (Theme.of(context).brightness == Brightness.dark) {
+        googleMapController.setMapStyle(_darkStyle);
+      } else {
+        googleMapController.setMapStyle("[]");
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    googleMapController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   void checkIsOnDutyOrNot() async {

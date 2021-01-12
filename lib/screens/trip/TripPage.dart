@@ -25,7 +25,7 @@ class TripPage extends StatefulWidget {
   _TripPageState createState() => _TripPageState();
 }
 
-class _TripPageState extends State<TripPage> {
+class _TripPageState extends State<TripPage> with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // SNACKBAR
@@ -85,6 +85,9 @@ class _TripPageState extends State<TripPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    //
+    WidgetsBinding.instance.addObserver(this);
     getMapSettings();
     acceptTrip();
   }
@@ -334,6 +337,28 @@ class _TripPageState extends State<TripPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      if (Theme.of(context).brightness == Brightness.dark) {
+        googleMapController.setMapStyle(_darkStyle);
+      } else {
+        googleMapController.setMapStyle("[]");
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    googleMapController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   void acceptTrip() {
