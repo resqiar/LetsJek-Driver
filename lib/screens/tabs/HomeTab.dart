@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +11,7 @@ import 'package:letsjek_driver/helpers/PushNotificationsHelper.dart';
 import 'package:letsjek_driver/models/DriverInformations.dart';
 import 'package:letsjek_driver/widgets/ConfirmBottomSheet.dart';
 import 'package:letsjek_driver/widgets/SubmitFlatButton.dart';
+import 'package:wakelock/wakelock.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -154,6 +153,7 @@ class _HomeTabState extends State<HomeTab> with WidgetsBindingObserver {
     super.initState();
 
     //
+    Wakelock.enable();
     WidgetsBinding.instance.addObserver(this);
     getMapSettings();
     getCurrentDriversInfo();
@@ -378,6 +378,7 @@ class _HomeTabState extends State<HomeTab> with WidgetsBindingObserver {
   void dispose() {
     // TODO: implement dispose
     googleMapController.dispose();
+    Wakelock.disable();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

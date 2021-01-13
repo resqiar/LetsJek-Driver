@@ -15,6 +15,7 @@ import 'package:letsjek_driver/widgets/CustomOutlinedButton.dart';
 import 'package:letsjek_driver/widgets/ListDivider.dart';
 import 'package:letsjek_driver/widgets/ProgressDialogue.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as mp;
+import 'package:wakelock/wakelock.dart';
 
 class TripPage extends StatefulWidget {
   final TripDetails tripDetails;
@@ -87,6 +88,7 @@ class _TripPageState extends State<TripPage> with WidgetsBindingObserver {
     super.initState();
 
     //
+    Wakelock.enable();
     WidgetsBinding.instance.addObserver(this);
     getMapSettings();
     acceptTrip();
@@ -357,6 +359,7 @@ class _TripPageState extends State<TripPage> with WidgetsBindingObserver {
   void dispose() {
     // TODO: implement dispose
     googleMapController.dispose();
+    Wakelock.disable();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -494,7 +497,9 @@ class _TripPageState extends State<TripPage> with WidgetsBindingObserver {
     setState(() {
       Polyline polyline = Polyline(
         polylineId: PolylineId('routes'),
-        color: Colors.purple,
+        color: (Theme.of(context).brightness == Brightness.dark)
+            ? Colors.white
+            : Colors.deepPurple,
         points: polylineCoords,
         jointType: JointType.round,
         width: 6,
