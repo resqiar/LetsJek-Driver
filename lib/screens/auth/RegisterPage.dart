@@ -99,7 +99,9 @@ class _RegisterPageState extends State<RegisterPage> {
               alignment: Alignment.center,
               height: 100,
               width: 100,
-              image: AssetImage('resources/images/logo.png'),
+              image: (Theme.of(context).brightness == Brightness.light)
+                  ? AssetImage('resources/images/icon_dark.png')
+                  : AssetImage('resources/images/icon_light.png'),
             ),
             SizedBox(
               height: 40,
