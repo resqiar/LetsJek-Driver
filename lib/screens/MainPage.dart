@@ -65,7 +65,9 @@ class _MainPageState extends State<MainPage>
         onTap: (value) => updateBottomNavIndex(value),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: (Theme.of(context).brightness == Brightness.dark)
+                ? Theme.of(context).primaryColor
+                : Colors.white,
             activeIcon: Icon(Icons.home),
             icon: Icon(Icons.home_outlined),
             label: 'Home',

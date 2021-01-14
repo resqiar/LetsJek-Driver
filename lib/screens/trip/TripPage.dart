@@ -140,7 +140,7 @@ class _TripPageState extends State<TripPage> with WidgetsBindingObserver {
             mapType: MapType.normal,
             buildingsEnabled: true,
             compassEnabled: true,
-            trafficEnabled: true,
+            trafficEnabled: false,
             myLocationEnabled: true,
             zoomControlsEnabled: true,
             zoomGesturesEnabled: true,
@@ -661,6 +661,43 @@ class _TripPageState extends State<TripPage> with WidgetsBindingObserver {
           await MethodHelper.findRoutes(currentLatLng, destLatLng);
 
       if (updatedInformations != null) {
+        // !: RENDER ROUTES :!
+        PolylinePoints polylinePoints = PolylinePoints();
+        List<PointLatLng> result =
+            polylinePoints.decodePolyline(updatedInformations.encodedPoints);
+
+        // clear available RESULT first
+        polylineCoords.clear();
+
+        if (result.isNotEmpty) {
+          // LOOP RESULT + ADD to LIST
+          result.forEach((PointLatLng points) {
+            polylineCoords.add(LatLng(points.latitude, points.longitude));
+          });
+        }
+
+        // PROPERTY of POLYLINE
+        // clear available polyline first
+        _polylines.clear();
+
+        setState(() {
+          Polyline polyline = Polyline(
+            polylineId: PolylineId('routes'),
+            color: (Theme.of(context).brightness == Brightness.dark)
+                ? Colors.white
+                : Colors.deepPurple,
+            points: polylineCoords,
+            jointType: JointType.round,
+            width: 6,
+            startCap: Cap.roundCap,
+            endCap: Cap.roundCap,
+            geodesic: true,
+          );
+
+          // add to Set
+          _polylines.add(polyline);
+        });
+
         setState(() {
           estimatedTime = updatedInformations.destDuration;
           estimatedKM = updatedInformations.destDistanceKM;
