@@ -29,14 +29,21 @@ Future<void> main() async {
             databaseURL: 'https://letsjek.firebaseio.com',
           ),
   );
-  runApp(MyApp());
+
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
+
+  runApp(MyApp(savedThemeMode: savedThemeMode));
 }
 
 class MyApp extends StatelessWidget {
+  final AdaptiveThemeMode savedThemeMode;
+
+  MyApp({this.savedThemeMode});
+
+  final isLogin = FirebaseAuth.instance.currentUser;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final isLogin = FirebaseAuth.instance.currentUser;
     return StyledToast(
       locale: const Locale('id', 'ID'),
       borderRadius: BorderRadius.circular(20.0),
@@ -68,7 +75,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Bolt-Regular',
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initial: AdaptiveThemeMode.system,
+        initial: savedThemeMode ?? AdaptiveThemeMode.system,
         builder: (theme, darkTheme) => MaterialApp(
           theme: theme,
           darkTheme: darkTheme,
