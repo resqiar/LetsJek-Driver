@@ -105,7 +105,7 @@ class _HomeTabState extends State<HomeTab> with WidgetsBindingObserver {
   //! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ !
 
   // GET DRIVER INFO
-  void getCurrentDriversInfo() {
+  Future getCurrentDriversInfo() async {
     currentUser = FirebaseAuth.instance.currentUser;
 
     // RETRIEVE ALL DRIVER INFORMATIONS
@@ -113,7 +113,7 @@ class _HomeTabState extends State<HomeTab> with WidgetsBindingObserver {
         .reference()
         .child('drivers/${currentUser.uid}');
 
-    driverDBRef.once().then((DataSnapshot dataSnapshot) {
+    await driverDBRef.once().then((DataSnapshot dataSnapshot) {
       if (dataSnapshot != null) {
         // POPULATE MODEL
         currentDriverInfo = DriverInformations.enterDataSnapshot(dataSnapshot);
@@ -127,6 +127,10 @@ class _HomeTabState extends State<HomeTab> with WidgetsBindingObserver {
     pushNotificationsHelper.initializeFCM(context);
     // GET TOKEN
     pushNotificationsHelper.getToken();
+
+    setState(() {
+      isInitializing = false;
+    });
   }
 
   String _darkStyle;

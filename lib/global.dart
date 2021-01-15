@@ -27,3 +27,6 @@ DatabaseReference tripRef;
 
 // CURRENT DRIVER INFO
 DriverInformations currentDriverInfo;
+
+// APP IS STILL FETCHING
+bool isInitializing = true;

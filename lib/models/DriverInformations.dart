@@ -8,12 +8,14 @@ class DriverInformations {
   String vehicleName;
   String vehicleColor;
   String vehicleNumber;
+  String driverProfileURL;
 
   DriverInformations({
     this.driverId,
     this.driverFullname,
     this.driverEmail,
     this.driverPhone,
+    this.driverProfileURL,
     this.vehicleName,
     this.vehicleColor,
     this.vehicleNumber,
@@ -24,6 +26,7 @@ class DriverInformations {
     driverFullname = dataSnapshot.value['fullname'];
     driverEmail = dataSnapshot.value['email'];
     driverPhone = dataSnapshot.value['phone'];
+    driverProfileURL = dataSnapshot.value['profile_url'];
     vehicleName = dataSnapshot.value['vehicle']['vehicleName'];
     vehicleColor = dataSnapshot.value['vehicle']['vehicleColor'];
     vehicleNumber = dataSnapshot.value['vehicle']['vehicleNumber'];

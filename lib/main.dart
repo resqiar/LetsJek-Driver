@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
         dark: ThemeData(
           brightness: Brightness.dark,
           primarySwatch: Colors.yellow,
-          accentColor: Colors.amber,
+          accentColor: Colors.deepPurple,
           textSelectionColor: Colors.white70,
           fontFamily: 'Bolt-Regular',
           visualDensity: VisualDensity.adaptivePlatformDensity,
